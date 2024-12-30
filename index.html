@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Booking Form</title>
+    <style>
+        /* CSS styles remain unchanged */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-size: 8px; /* Reduced font size */
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Adjusted to occupy full viewport height */
+        }
+        .form-container {
+            width: 50%;
+            text-align: center;
+        }
+        form {
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 50%;
+            padding: 6px;
+            margin-top: 6px;
+            font-size: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h1>Travel Booking Form</h1>
+
+        <form action="/submit_booking" method="POST" id="bookingForm">
+
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" id="customer_name" name="customer_name" required><br>
+
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" required><br>
+
+            <label for="number_of_travelers">Number of Travelers:</label>
+            <input type="number" id="number_of_travelers" name="number_of_travelers" min="1" required onchange="calculateCost()"><br>
+
+            <label for="id_proof">ID Proof:</label>
+            <input type="text" id="id_proof" name="id_proof" required><br>
+
+            <label for="place_of_travel">Place of Travel:</label>
+            <input type="text" id="place_of_travel" name="place_of_travel" required><br>
+    
+            <label for="starting_date_of_tour">Starting Date of Tour:</label>
+            <input type="date" id="starting_date_of_tour" name="starting_date_of_tour" required><br>
+
+            <label for="ending_date_of_tour">Ending Date of Tour:</label>
+            <input type="date" id="ending_date_of_tour" name="ending_date_of_tour" onchange="calculateDays()" required><br>
+
+            <label for="days_of_tour">Total Days of Tour:</label>
+            <input type="number" id="days_of_tour" name="days_of_tour" readonly><br>
+
+            <label for="cost_per_person_per_day">Cost Per Person Per Day:</label>
+            <input type="number" id="cost_per_person_per_day" name="cost_per_person_per_day" min="1" required onchange="calculateCost()"><br>
+
+            <label for="total_trip_cost">Total Cost of Trip:</label>
+            <input type="number" id="total_trip_cost" name="total_trip_cost" readonly><br>
+
+            <!-- Add a second input for confirmation -->
+            <label for="confirm_submission">Confirm Submission:</label>
+            <input type="checkbox" id="confirm_submission" required><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+<script>
+    // JavaScript for calculations and form submission confirmation
+    function calculateDays() {
+        var startDate = new Date(document.getElementById('starting_date_of_tour').value);
+        var endDate = new Date(document.getElementById('ending_date_of_tour').value);
+        var timeDiff = endDate.getTime() - startDate.getTime();
+        var dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        document.getElementById('days_of_tour').value = dayDiff;
+        calculateCost(); // Call calculateCost() after updating days_of_tour
+    }
+
+    function calculateCost() {
+        var costPerDayPerPerson = parseFloat(document.getElementById('cost_per_person_per_day').value);
+        var numberOfTravelers = parseInt(document.getElementById('number_of_travelers').value);
+        var totalDays = parseInt(document.getElementById('days_of_tour').value);
+        var totalTripCost = (costPerDayPerPerson * totalDays * numberOfTravelers);
+        document.getElementById('total_trip_cost').value = totalTripCost;
+    }
+
+    // Add JavaScript to prevent form submission without confirmation
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+        if (!document.getElementById('confirm_submission').checked) {
+            event.preventDefault(); // Prevent form submission
+            alert('Please confirm the submission.'); // Show an alert message
+        }
+    });
+</script>
+
+</body>
+</html>
